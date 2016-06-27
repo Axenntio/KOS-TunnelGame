@@ -21,10 +21,10 @@ void main() {
 	screen_clear(screen);
 	//draw_string(screen, 1, 1, "Test");
 	//draw_sprite_or(screen, 32, 32, chess_height, &chess_sprite);
-	draw_window(screen, "Axenntio's Test", WIN_DEFAULTS);
 	screen_draw(screen);
 	while (1){
 		screen_clear(screen);
+		draw_window(screen, "Axenntio's Test", WIN_DEFAULTS);
 		key=get_key();
 		if(posX%8==0 && posY%8==0){
 			if(key==KEY_DOWN) {posY++;dir=0;}
