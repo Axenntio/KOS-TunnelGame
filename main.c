@@ -11,21 +11,19 @@
 
 void main() {
 	SCREEN *screen;
-	uint8_t key=NULL;
-	uint8_t posX=0;
-	uint8_t posY=0;
-	uint8_t dir=0;
+	uint8_t key=NULL, posX=0, posY=0, dir=0;
+	load_library("/lib/core");
 	get_lcd_lock();
 	get_keypad_lock();
 	screen = screen_allocate();
 	screen_clear(screen);
-	//draw_string(screen, 1, 1, "Test");
-	//draw_sprite_or(screen, 32, 32, chess_height, &chess_sprite);
+	//show_message(screen, "problem ?", "\02Option 1\00Option 2\00", 1);
 	screen_draw(screen);
 	while (1){
 		screen_clear(screen);
 		draw_window(screen, "Axenntio's Test", WIN_DEFAULTS);
 		key=get_key();
+		if(key==KEY_F1) launch_castle();
 		if(posX%8==0 && posY%8==0){
 			if(key==KEY_DOWN) {posY++;dir=0;}
 			else if(key==KEY_UP) {posY--;dir=1;}
