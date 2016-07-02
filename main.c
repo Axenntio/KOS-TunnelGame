@@ -17,8 +17,8 @@ bool getPixel(SCREEN*, unsigned char, unsigned char);
 
 void main() {
 	SCREEN *screen;
-	uint8_t key=NULL, posY=0, height=16, space=24;
-	uint8_t i, j, tmp;
+	uint8_t key=NULL, posY=22, height=16, space=24;
+	uint8_t i, j;
 	unsigned char _;
 	load_library("/lib/core");
 	get_lcd_lock();
@@ -26,11 +26,11 @@ void main() {
 	screen = screen_allocate();
 	screen_clear(screen);
 	screen_draw(screen);
+	draw_rect_or(screen, height, 95, 0, 0);
+	draw_rect_or(screen, 64-(height+space), 95, height+space, 0);
 	draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
 	while (1) {
 		//screen_clear(screen);
-		draw_line(screen, 0, 0, 95, 0);
-		draw_line(screen, 0, 63, 95, 63);
 		draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
 		//draw_window(screen, "Axenntio's Test", WIN_DEFAULTS);
 		switch(get_random()%3){
@@ -55,10 +55,10 @@ void main() {
 		}
 
 
-		for(i=0;i<96;i++){
+		for(i=1;i<96;i++){
 			for(j=0;j<64;j++){
-				//if()
-				//getPixel(screen, 0,0);
+				if(getPixel(screen, i, j)){set_pixel(screen, i-1, j);}
+				else{reset_pixel(screen, i-1, j);}
 			}
 		}
 
