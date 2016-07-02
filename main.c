@@ -7,37 +7,78 @@
 
 //#include <experimental/debug.h>
 
+#define SPRSIZE 8
+
+bool getBit(unsigned char, unsigned char);
+unsigned char getSector(SCREEN*, unsigned char, unsigned char);
+bool getPixel(SCREEN*, unsigned char, unsigned char);
+
 /* Warning! C support in KnightOS is highly experimental. Your mileage may vary. */
 
 void main() {
 	SCREEN *screen;
-	uint8_t key=NULL, posX=0, posY=0, dir=0;
+	uint8_t key=NULL, posY=0, height=16, space=24;
+	uint8_t i, j, tmp;
+	unsigned char _;
 	load_library("/lib/core");
 	get_lcd_lock();
 	get_keypad_lock();
 	screen = screen_allocate();
 	screen_clear(screen);
-	//show_message(screen, "problem ?", "\02Option 1\00Option 2\00", 1);
 	screen_draw(screen);
-	while (1){
-		screen_clear(screen);
-		draw_window(screen, "Axenntio's Test", WIN_DEFAULTS);
-		key=get_key();
-		if(key==KEY_F1) launch_castle();
-		if(posX%8==0 && posY%8==0){
-			if(key==KEY_DOWN) {posY++;dir=0;}
-			else if(key==KEY_UP) {posY--;dir=1;}
-			else if(key==KEY_RIGHT) {posX++;dir=2;}
-			else if(key==KEY_LEFT) {posX--;dir=3;}
+	draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
+	while (1) {
+		//screen_clear(screen);
+		draw_line(screen, 0, 0, 95, 0);
+		draw_line(screen, 0, 63, 95, 63);
+		draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
+		//draw_window(screen, "Axenntio's Test", WIN_DEFAULTS);
+		switch(get_random()%3){
+			case 1:
+				if(height>0) height--;
+				break;
+			case 2:
+				if(height<95) height++;
+				break;
+			default:
+				break;
 		}
-		else{
-			if(dir==0){posY++;}
-			if(dir==1){posY--;}
-			if(dir==2){posX++;}
-			if(dir==3){posX--;}
+
+		for(i=0;i<96;i++){
+			reset_pixel(screen, 95, i);
 		}
-		draw_sprite_or(screen, posX, posY, chess_height, &chess_sprite);
+		for(i=0;i<height;i++){
+			set_pixel(screen, 95, i);
+		}
+		for(i=height+space;i<96;i++){
+			set_pixel(screen, 95, i);
+		}
+
+
+		for(i=0;i<96;i++){
+			for(j=0;j<64;j++){
+				//if()
+				//getPixel(screen, 0,0);
+			}
+		}
+
+		key = app_get_key(&_);
+		if(key==KEY_UP) {posY--;}
+		if(key==KEY_DOWN) {posY++;}
+		draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
 		screen_draw(screen);
-		ksleep(10);
+		//ksleep(10);
 	}
+}
+
+bool getPixel(SCREEN* data, unsigned char x, unsigned char y){
+	return getBit(getSector(data, x/8, y), 7-(x%8));
+}
+
+bool getBit(unsigned char byte, unsigned char number){
+	return (byte >> number) & 0x01;
+}
+
+unsigned char getSector(SCREEN* data, unsigned char x, unsigned char y){
+	return data[(y*12)+x];
 }
