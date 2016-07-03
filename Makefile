@@ -6,7 +6,7 @@ OBJECTS=$(OUT)crt0.o $(patsubst %.c,$(OUT)%.o,$(wildcard *.c))
 OBJECTS+=$(patsubst img/%.png,$(OUT)img/%.o, $(IMAGES))
 INCLUDE:=$(INCLUDE) -I include/
 
-ALL_TARGETS:=$(BIN)test
+ALL_TARGETS:=$(BIN)Tunnel
 
 $(OUT)img/%.bin: img/%.png
 	mkdir -p $(OUT)img
@@ -15,20 +15,20 @@ $(OUT)img/%.bin: img/%.png
 $(OUT)img/%.o: $(OUT)img/%.bin
 	scwrap $< $@ $$(basename -s .bin $<)_sprite
 
-$(OUT)test.o: $(OBJECTS)
+$(OUT)Tunnel.o: $(OBJECTS)
 	mkdir -p $(OUT)
-	scas $(ASFLAGS) -c $(OBJECTS) $(LIBRARIES) -o $(OUT)test.o
+	scas $(ASFLAGS) -c $(OBJECTS) $(LIBRARIES) -o $(OUT)Tunnel.o
 
-$(BIN)test: $(OUT)test.o
+$(BIN)Tunnel: $(OUT)Tunnel.o
 	mkdir -p $(BIN)
-	scas $(ASFLAGS) $(OUT)test.o -o $(BIN)test
+	scas $(ASFLAGS) $(OUT)Tunnel.o -o $(BIN)Tunnel
 
-$(APPS)test.app: config/test.app
+$(APPS)Tunnel.app: config/Tunnel.app
 	mkdir -p $(APPS)
-	cp config/test.app $(APPS)
+	cp config/Tunnel.app $(APPS)
 
-$(SHARE)icons/test.img: config/test.png
+$(SHARE)icons/Tunnel.img: config/Tunnel.png
 	mkdir -p $(SHARE)icons
-	kimg -c config/test.png $(SHARE)icons/test.img
+	kimg -c config/Tunnel.png $(SHARE)icons/Tunnel.img
 
 include .knightos/sdk.make
