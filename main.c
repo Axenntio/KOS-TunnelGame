@@ -17,8 +17,9 @@ bool getPixel(SCREEN*, unsigned char, unsigned char);
 
 void main() {
 	SCREEN *screen;
-	uint8_t key=NULL, posY=22, height=16, space=24;
-	uint16_t i;
+	bool game=true;
+	uint8_t key=NULL, posY=22, height=16, space=24, bit1=0, bit2=0, gen=0, forTime=0, speedLoop=0, speed=1;
+	uint16_t i, score=0;
 	unsigned char _;
 	load_library("/lib/core");
 	get_lcd_lock();
@@ -27,48 +28,62 @@ void main() {
 	screen_clear(screen);
 	draw_rect_or(screen, height, 95, 0, 0);
 	draw_rect_or(screen, 64-(height+space), 95, height+space, 0);
-	draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
-	while (1) {
-		draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
-		switch(get_random()%3){
-			case 1:
-				if(posY>0) posY--;
-				break;
-			case 2:
-				if(posY<95-space) posY++;
-				break;
-			default:
-				break;
-		}
-
-		for(i=0;i<96;i++){
-			reset_pixel(screen, 95, i);
-		}
-		for(i=0;i<height;i++){
-			set_pixel(screen, 95, i);
-		}
-		for(i=height+space;i<96;i++){
-			set_pixel(screen, 95, i);
-		}
-
-		//Left Shift
-		for(i=0;i<768;i++){
-			screen[i]=screen[i]<<1;
-		}
-
-		/*for(i=1;i<96;i++){
-			for(j=0;j<64;j++){
-				if(getPixel(screen, i, j)){set_pixel(screen, i-1, j);}
-				else{reset_pixel(screen, i-1, j);}
+	draw_sprite_xor(screen, 88, posY, airplane_height, &airplane_sprite);
+	while(game){
+		draw_sprite_xor(screen, 88, posY, airplane_height, &airplane_sprite);
+		draw_rect_or(screen, 8, 96, 56, 0);
+		if(speedLoop==speed){
+			if(!forTime){
+				gen=get_random()%3;
+				forTime=2+get_random()%3;
 			}
-		}*/
+			else{
+				forTime--;
+			}
+			switch(gen){
+				case 1:
+					if(height>1) height--;
+					break;
+				case 2:
+					if(height<56-space) height++;
+					break;
+				default:
+					break;
+			}
+
+			//Right Shift
+			for(i=0; i<768; i++) {
+			    bit2 = screen[i] & 0x01;
+			    screen[i] >>= 1;
+			    screen[i] |= bit1 << 7;
+			    bit1 = bit2;
+			}
+			speedLoop=0;
+		}
+		else{
+			speedLoop++;
+		}
+
+		for(i=0;i<56;i++){reset_pixel(screen, 0, i);}
+		for(i=0;i<height;i++){set_pixel(screen, 0, i);}
+		for(i=height+space;i<56;i++){set_pixel(screen, 0, i);}
 
 		key = app_get_key(&_);
-		if(key==KEY_UP) {height--;}
-		if(key==KEY_DOWN) {height++;}
-		draw_sprite_xor(screen, 0, posY, airplane_height, &airplane_sprite);
+		if(key==KEY_UP) {posY--;}
+		if(key==KEY_DOWN) {posY++;}
+		draw_sprite_xor(screen, 88, posY, airplane_height, &airplane_sprite);
+		draw_rect_and(screen, 7, 96, 57, 0);
+		draw_string(screen, 1, 58, "Score:");
+		draw_short(screen, 26, 58, score);
 		screen_draw(screen);
-		//ksleep(10);
+		
+		score++;
+		if(score%1000==0 && space>12){
+			space--;
+		}
+		if(score==60000){
+			space=0;
+		}
 	}
 }
 
