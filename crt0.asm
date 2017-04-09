@@ -8,7 +8,7 @@
     .dw __name
     .db KEXC_HEADER_END
 __name:
-    .db "test", 0
+    .db "Tunnel", 0
 __start:
     call __relocate_data
     call __initialize_globals
