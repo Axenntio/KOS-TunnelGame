@@ -10,7 +10,7 @@ ALL_TARGETS:=$(BIN)tunnel $(APPS)tunnel.app $(SHARE)icons/tunnel.img
 
 $(OUT)img/%.bin: img/%.png
 	mkdir -p $(OUT)img
-	kimg -m -b $< $@
+	kimg -b $< $@
 
 $(OUT)img/%.o: $(OUT)img/%.bin
 	scwrap $< $@ $$(basename -s .bin $<)_sprite
