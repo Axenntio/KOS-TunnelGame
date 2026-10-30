@@ -94,7 +94,7 @@ void main()
 			!getPixel(screen, 92, posY + 4) ) {
 			if (score > highscore) {
 				highscore = score;
-				// saveHightScore();
+				saveHightScore();
 			}
 			init();
 		}
