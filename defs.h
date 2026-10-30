@@ -2,8 +2,9 @@
 #define __DEFS_H
 
 extern const void *player_sprite_start;
-#define player_sprite player_sprite_start
-#define player_width 8
-#define player_height 8
+#define PLAYER_SPRITE player_sprite_start
+#define PLAYER_WIDTH 8
+#define PLAYER_HEIGHT 8
+#define INITIAL_SPACE 30
 
 #endif
