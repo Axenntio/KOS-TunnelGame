@@ -17,7 +17,7 @@ void init();
 void scrollRightASM();
 void scrollRight();
 uint16_t loadHighScore();
-void saveHightScore(uint16_t);
+void saveHightScore();
 
 const char scoreDir[] = "/var/tunnel";
 const char scorePath[] = "/var/tunnel/high";
@@ -26,7 +26,7 @@ const char scorePath[] = "/var/tunnel/high";
 
 SCREEN *screen;
 uint8_t key, posY, height, space, gen, forTime;
-uint16_t score, highscore;
+uint16_t score, high_score;
 uint8_t lost_focus;
 
 uint16_t max(uint16_t a, uint16_t b)
@@ -40,7 +40,7 @@ void main()
 	get_lcd_lock();
 	get_keypad_lock();
 	screen = screen_allocate();
-	highscore = loadHighScore();
+	high_score = loadHighScore();
 	init();
 	while (1) {
 		draw_sprite_xor(screen, 88, posY, PLAYER_HEIGHT, &PLAYER_SPRITE);
@@ -85,15 +85,15 @@ void main()
 		draw_string(screen, 1, 58, "Score:");
 		draw_short(screen, 26, 58, score);
 		draw_string(screen, 55, 58, "Best:");
-		draw_short(screen, 76, 58, highscore);
+		draw_short(screen, 76, 58, high_score);
 		screen_draw(screen);
 
 		if (!getPixel(screen, 95, posY) ||
 			!getPixel(screen, 95, posY + 7) ||
 			!getPixel(screen, 92, posY + 3) ||
 			!getPixel(screen, 92, posY + 4) ) {
-			if (score > highscore) {
-				highscore = score;
+			if (score > high_score) {
+				high_score = score;
 				saveHightScore();
 			}
 			init();
@@ -208,7 +208,7 @@ uint16_t loadHighScore() __naked
 	__endasm;
 }
 
-void saveHightScore(uint16_t) __naked
+void saveHightScore() __naked
 {
 	__asm
 	ld de, _scoreDir
@@ -218,11 +218,13 @@ void saveHightScore(uint16_t) __naked
 	PCALL(CREATEDIRECTORY)
 .open:
 	ld de, _scorePath
+	ld a, 1
+	cp a
 	PCALL(OPENFILEWRITE)
 	ret nz
-	ld hl, (_highScore)
+	ld hl, (_high_score)
 	PCALL(STREAMWRITEWORD)
 	PCALL(CLOSESTREAM)
 	ret
-	__endasm
+	__endasm;
 }
